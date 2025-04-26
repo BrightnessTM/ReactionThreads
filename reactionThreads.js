@@ -224,6 +224,14 @@ module.exports = function ({ bot, config, commands, knex, threads }) {
     const reaction = isValidReaction(message.channel.id, message.id, stringifiedEmoji);
     const userHasThread = await threads.findOpenThreadByUserId(reactor.id);
     if (reaction != null && userHasThread == null && !(await isBlocked(reactor.id))) {
+      const tempDMChannel = await bot.getDMChannel(this.user_id);
+      if (!tempDMChannel) {
+        const warningMessage = message.channel.createMessage({ content: `⚠️ <@${reactor.id}> Could not open a thread. Please ensure you have DMs enabled on this server.` });
+        setTimeout(function() {
+          warningMessage.delete().catch(() => {});  
+        }, 10000);
+        return;
+      }
       const newThread = await threads.createNewThreadForUser(reactor.user, {
         source: "reaction",
         categoryId: reaction.categoryId,
