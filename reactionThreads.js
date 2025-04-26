@@ -232,6 +232,15 @@ module.exports = function ({ bot, config, commands, knex, threads }) {
         }, 10000);
         return;
       }
+      try {
+        tempDMChannel.createMessage({ content: "Your ModMail thread has been opened. Please let us know how we can help by sending a message here." });
+      } catch (e) {
+        const warningMessage = message.channel.createMessage({ content: `⚠️ <@${reactor.id}> Could not open a thread. Please ensure you have DMs enabled on this server.` });
+        setTimeout(function() {
+          warningMessage.delete().catch(() => {});  
+        }, 10000);
+        return;
+      }
       const newThread = await threads.createNewThreadForUser(reactor.user, {
         source: "reaction",
         categoryId: reaction.categoryId,
