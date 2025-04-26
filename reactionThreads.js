@@ -227,6 +227,7 @@ module.exports = function ({ bot, config, commands, knex, threads }) {
       const tempDMChannel = await bot.getDMChannel(reactor.id);
       if (!tempDMChannel) {
         const warningMessage = message.channel.createMessage({ content: `⚠️ <@${reactor.id}> Could not open a thread. Please ensure you have DMs enabled on this server.` });
+        await bot.removeMessageReaction(message.channel.id, message.id, stringifiedEmoji.replace(">", ""), reactor.id);
         setTimeout(function() {
           warningMessage.delete().catch(() => {});  
         }, 10000);
@@ -236,6 +237,7 @@ module.exports = function ({ bot, config, commands, knex, threads }) {
         await tempDMChannel.createMessage({ content: "Your ModMail thread has been opened. Please let us know how we can help by sending a message here." });
       } catch (e) {
         const warningMessage = await message.channel.createMessage({ content: `⚠️ <@${reactor.id}> Could not open a thread. Please ensure you have DMs enabled on this server.` });
+        await bot.removeMessageReaction(message.channel.id, message.id, stringifiedEmoji.replace(">", ""), reactor.id);
         setTimeout(function() {
           warningMessage.delete().catch(() => {});  
         }, 10000);
